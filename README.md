@@ -36,6 +36,9 @@ java RadioButtonDemo
 4. Rabbit - Light gray rabbit with long ears
 5. Pig - Pink pig with snout, ears, and curled tail
 
+## GitHub Repository
+https://github.com/Engineermuema/Assignment-2-oop-2-java.git
+
 ## Author
 OOP Assignment 2
 
