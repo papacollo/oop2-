@@ -1,12 +1,14 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 
 public class RadioButtonDemo extends JFrame implements ActionListener {
     private JRadioButton birdButton, catButton, dogButton, rabbitButton, pigButton;
     private ButtonGroup buttonGroup;
     private JLabel imageLabel;
     private JPanel leftPanel, rightPanel;
+    private String imagesPath = "images";
 
     public RadioButtonDemo() {
         // Set up the frame
@@ -96,40 +98,43 @@ public class RadioButtonDemo extends JFrame implements ActionListener {
     }
 
     private void displayPet(String petType) {
-        // Create a colored panel representing the pet
-        JPanel petPanel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                Graphics2D g2d = (Graphics2D) g;
-                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-                int width = getWidth();
-                int height = getHeight();
-
-                switch (petType) {
-                    case "Bird":
-                        drawBird(g2d, width, height);
-                        break;
-                    case "Cat":
-                        drawCat(g2d, width, height);
-                        break;
-                    case "Dog":
-                        drawDog(g2d, width, height);
-                        break;
-                    case "Rabbit":
-                        drawRabbit(g2d, width, height);
-                        break;
-                    case "Pig":
-                        drawPig(g2d, width, height);
-                        break;
-                }
-            }
-        };
-
-        petPanel.setBackground(Color.WHITE);
-        rightPanel.removeAll();
-        rightPanel.add(petPanel, BorderLayout.CENTER);
+        String imagePath = "";
+        String imageFileName = "";
+        
+        switch (petType) {
+            case "Bird":
+                imageFileName = "bird.jpg";
+                break;
+            case "Cat":
+                imageFileName = "cat.jpg";
+                break;
+            case "Dog":
+                imageFileName = "dog.jpg";
+                break;
+            case "Rabbit":
+                imageFileName = "rabbit.avif";
+                break;
+            case "Pig":
+                imageFileName = "pig.jpg";
+                break;
+        }
+        
+        imagePath = imagesPath + File.separator + imageFileName;
+        
+        // Load and display the image
+        File imageFile = new File(imagePath);
+        if (imageFile.exists()) {
+            ImageIcon imageIcon = new ImageIcon(imagePath);
+            
+            // Scale image to fit the panel
+            Image scaledImage = imageIcon.getImage().getScaledInstance(300, 250, Image.SCALE_SMOOTH);
+            imageLabel.setIcon(new ImageIcon(scaledImage));
+            imageLabel.setText("");
+        } else {
+            imageLabel.setText("Image not found: " + imagePath);
+            imageLabel.setIcon(null);
+        }
+        
         rightPanel.revalidate();
         rightPanel.repaint();
 
@@ -137,206 +142,6 @@ public class RadioButtonDemo extends JFrame implements ActionListener {
         JOptionPane.showMessageDialog(this, "You selected: " + petType, "Pet Selection", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    private void drawBird(Graphics2D g, int width, int height) {
-        int centerX = width / 2;
-        int centerY = height / 2;
-
-        // Body (yellow)
-        g.setColor(new Color(255, 200, 0));
-        g.fillOval(centerX - 30, centerY - 20, 60, 40);
-
-        // Head (yellow)
-        g.fillOval(centerX - 15, centerY - 35, 30, 30);
-
-        // Eye (black)
-        g.setColor(Color.BLACK);
-        g.fillOval(centerX - 5, centerY - 30, 8, 8);
-
-        // Beak (orange)
-        g.setColor(new Color(255, 140, 0));
-        g.fillPolygon(new int[]{centerX + 8, centerX + 25, centerX + 8}, new int[]{centerY - 25, centerY - 20, centerY - 15}, 3);
-
-        // Wings (darker yellow)
-        g.setColor(new Color(200, 160, 0));
-        g.fillOval(centerX - 35, centerY - 10, 20, 25);
-        g.fillOval(centerX + 15, centerY - 10, 20, 25);
-
-        // Feet (orange)
-        g.setColor(new Color(255, 140, 0));
-        g.setStroke(new BasicStroke(2));
-        g.drawLine(centerX - 10, centerY + 20, centerX - 10, centerY + 35);
-        g.drawLine(centerX + 10, centerY + 20, centerX + 10, centerY + 35);
-    }
-
-    private void drawCat(Graphics2D g, int width, int height) {
-        int centerX = width / 2;
-        int centerY = height / 2;
-
-        // Body (orange)
-        g.setColor(new Color(255, 140, 0));
-        g.fillOval(centerX - 35, centerY, 70, 60);
-
-        // Head
-        g.fillOval(centerX - 30, centerY - 40, 60, 50);
-
-        // Ears (triangles)
-        g.fillPolygon(new int[]{centerX - 25, centerX - 35, centerX - 15}, new int[]{centerY - 35, centerY - 60, centerY - 55}, 3);
-        g.fillPolygon(new int[]{centerX + 25, centerX + 35, centerX + 15}, new int[]{centerY - 35, centerY - 60, centerY - 55}, 3);
-
-        // Eyes (white)
-        g.setColor(Color.WHITE);
-        g.fillOval(centerX - 15, centerY - 25, 12, 12);
-        g.fillOval(centerX + 3, centerY - 25, 12, 12);
-
-        // Pupils (black)
-        g.setColor(Color.BLACK);
-        g.fillOval(centerX - 12, centerY - 22, 6, 8);
-        g.fillOval(centerX + 6, centerY - 22, 6, 8);
-
-        // Nose (pink)
-        g.setColor(new Color(255, 192, 203));
-        g.fillOval(centerX - 3, centerY - 10, 6, 6);
-
-        // Mouth
-        g.setColor(Color.BLACK);
-        g.setStroke(new BasicStroke(2));
-        g.drawLine(centerX, centerY - 5, centerX - 10, centerY);
-        g.drawLine(centerX, centerY - 5, centerX + 10, centerY);
-
-        // Whiskers
-        g.drawLine(centerX - 25, centerY - 8, centerX - 40, centerY - 5);
-        g.drawLine(centerX - 25, centerY, centerX - 40, centerY + 2);
-        g.drawLine(centerX + 25, centerY - 8, centerX + 40, centerY - 5);
-        g.drawLine(centerX + 25, centerY, centerX + 40, centerY + 2);
-    }
-
-    private void drawDog(Graphics2D g, int width, int height) {
-        int centerX = width / 2;
-        int centerY = height / 2;
-
-        // Body (brown)
-        g.setColor(new Color(139, 69, 19));
-        g.fillOval(centerX - 40, centerY - 10, 80, 50);
-
-        // Head
-        g.fillOval(centerX - 25, centerY - 50, 50, 45);
-
-        // Ears (floppy)
-        g.fillOval(centerX - 40, centerY - 45, 20, 35);
-        g.fillOval(centerX + 20, centerY - 45, 20, 35);
-
-        // Snout (lighter brown)
-        g.setColor(new Color(180, 100, 40));
-        g.fillOval(centerX - 15, centerY - 30, 30, 25);
-
-        // Eyes
-        g.setColor(Color.BLACK);
-        g.fillOval(centerX - 12, centerY - 40, 8, 8);
-        g.fillOval(centerX + 4, centerY - 40, 8, 8);
-
-        // Nose
-        g.fillOval(centerX - 4, centerY - 22, 8, 8);
-
-        // Mouth
-        g.setStroke(new BasicStroke(2));
-        g.drawLine(centerX, centerY - 18, centerX - 5, centerY - 10);
-        g.drawLine(centerX, centerY - 18, centerX + 5, centerY - 10);
-
-        // Tail
-        g.setColor(new Color(139, 69, 19));
-        g.drawLine(centerX + 40, centerY + 10, centerX + 60, centerY - 10);
-    }
-
-    private void drawRabbit(Graphics2D g, int width, int height) {
-        int centerX = width / 2;
-        int centerY = height / 2;
-
-        // Body (white/light gray)
-        g.setColor(new Color(240, 240, 240));
-        g.fillOval(centerX - 30, centerY - 10, 60, 50);
-
-        // Head
-        g.fillOval(centerX - 22, centerY - 45, 44, 40);
-
-        // Ears (long)
-        g.fillOval(centerX - 12, centerY - 80, 10, 50);
-        g.fillOval(centerX + 2, centerY - 75, 10, 50);
-
-        // Inner ears (pink)
-        g.setColor(new Color(255, 192, 203));
-        g.fillOval(centerX - 10, centerY - 75, 6, 40);
-        g.fillOval(centerX + 4, centerY - 70, 6, 40);
-
-        // Eyes (black)
-        g.setColor(Color.BLACK);
-        g.fillOval(centerX - 10, centerY - 30, 8, 8);
-        g.fillOval(centerX + 2, centerY - 30, 8, 8);
-
-        // Nose (pink)
-        g.setColor(new Color(255, 192, 203));
-        g.fillOval(centerX - 3, centerY - 18, 6, 6);
-
-        // Mouth
-        g.setColor(Color.BLACK);
-        g.setStroke(new BasicStroke(1));
-        g.drawLine(centerX, centerY - 12, centerX - 3, centerY - 5);
-        g.drawLine(centerX, centerY - 12, centerX + 3, centerY - 5);
-
-        // Front paws
-        g.setColor(new Color(240, 240, 240));
-        g.fillOval(centerX - 18, centerY + 40, 10, 15);
-        g.fillOval(centerX + 8, centerY + 40, 10, 15);
-
-        // Tail (fluffy)
-        g.fillOval(centerX + 25, centerY, 20, 20);
-    }
-
-    private void drawPig(Graphics2D g, int width, int height) {
-        int centerX = width / 2;
-        int centerY = height / 2;
-
-        // Body (pink)
-        g.setColor(new Color(255, 150, 180));
-        g.fillOval(centerX - 45, centerY - 15, 90, 60);
-
-        // Head
-        g.fillOval(centerX - 35, centerY - 50, 70, 50);
-
-        // Snout
-        g.fillOval(centerX - 18, centerY - 25, 36, 25);
-
-        // Ears
-        g.fillPolygon(new int[]{centerX - 30, centerX - 45, centerX - 20}, new int[]{centerY - 45, centerY - 60, centerY - 55}, 3);
-        g.fillPolygon(new int[]{centerX + 30, centerX + 45, centerX + 20}, new int[]{centerY - 45, centerY - 60, centerY - 55}, 3);
-
-        // Eyes (black)
-        g.setColor(Color.BLACK);
-        g.fillOval(centerX - 15, centerY - 35, 8, 8);
-        g.fillOval(centerX + 7, centerY - 35, 8, 8);
-
-        // Nostrils
-        g.fillOval(centerX - 8, centerY - 13, 4, 4);
-        g.fillOval(centerX + 4, centerY - 13, 4, 4);
-
-        // Mouth
-        g.setStroke(new BasicStroke(2));
-        g.drawLine(centerX, centerY - 5, centerX - 5, centerY + 5);
-        g.drawLine(centerX, centerY - 5, centerX + 5, centerY + 5);
-
-        // Legs
-        g.setColor(new Color(255, 150, 180));
-        g.fillRect(centerX - 30, centerY + 45, 12, 20);
-        g.fillRect(centerX - 8, centerY + 45, 12, 20);
-        g.fillRect(centerX + 16, centerY + 45, 12, 20);
-        g.fillRect(centerX + 38, centerY + 45, 12, 20);
-
-        // Tail (curled)
-        g.setColor(Color.BLACK);
-        g.setStroke(new BasicStroke(3));
-        g.drawLine(centerX + 45, centerY + 15, centerX + 55, centerY);
-        g.drawLine(centerX + 55, centerY, centerX + 60, centerY - 10);
-        g.drawLine(centerX + 60, centerY - 10, centerX + 55, centerY - 15);
-    }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
