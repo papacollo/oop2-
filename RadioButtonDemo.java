@@ -1,6 +1,8 @@
 import javax.swing.*;
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 
 public class RadioButtonDemo extends JFrame implements ActionListener {
@@ -98,40 +100,70 @@ public class RadioButtonDemo extends JFrame implements ActionListener {
     }
 
     private void displayPet(String petType) {
+        String[] possibleFormats = {"jpeg", "jpg", "png", "gif", "bmp"};
         String imagePath = "";
         String imageFileName = "";
+        String baseName = "";
         
         switch (petType) {
             case "Bird":
-                imageFileName = "bird.jpg";
+                baseName = "bird";
                 break;
             case "Cat":
-                imageFileName = "cat.jpg";
+                baseName = "cat";
                 break;
             case "Dog":
-                imageFileName = "dog.jpg";
+                baseName = "dog";
                 break;
             case "Rabbit":
-                imageFileName = "rabbit.avif";
+                baseName = "rabbit";
                 break;
             case "Pig":
-                imageFileName = "pig.jpg";
+                baseName = "pig";
                 break;
         }
         
-        imagePath = imagesPath + File.separator + imageFileName;
+        // Try to find the image file in different formats
+        File imageFile = null;
+        for (String format : possibleFormats) {
+            String testPath = imagesPath + File.separator + baseName + "." + format;
+            File testFile = new File(testPath);
+            if (testFile.exists()) {
+                imageFile = testFile;
+                imagePath = testPath;
+                imageFileName = baseName + "." + format;
+                break;
+            }
+        }
         
         // Load and display the image
-        File imageFile = new File(imagePath);
-        if (imageFile.exists()) {
-            ImageIcon imageIcon = new ImageIcon(imagePath);
-            
-            // Scale image to fit the panel
-            Image scaledImage = imageIcon.getImage().getScaledInstance(300, 250, Image.SCALE_SMOOTH);
-            imageLabel.setIcon(new ImageIcon(scaledImage));
-            imageLabel.setText("");
+        if (imageFile != null && imageFile.exists()) {
+            try {
+                // Try using ImageIO first for better format support
+                BufferedImage bufferedImage = ImageIO.read(imageFile);
+                if (bufferedImage != null) {
+                    Image scaledImage = bufferedImage.getScaledInstance(300, 250, Image.SCALE_SMOOTH);
+                    imageLabel.setIcon(new ImageIcon(scaledImage));
+                    imageLabel.setText("");
+                } else {
+                    // If ImageIO fails, try ImageIcon as fallback
+                    ImageIcon imageIcon = new ImageIcon(imagePath);
+                    if (imageIcon.getImage() != null && imageIcon.getIconWidth() > 0) {
+                        Image scaledImage = imageIcon.getImage().getScaledInstance(300, 250, Image.SCALE_SMOOTH);
+                        imageLabel.setIcon(new ImageIcon(scaledImage));
+                        imageLabel.setText("");
+                    } else {
+                        imageLabel.setText("Error: Could not load " + imageFileName);
+                        imageLabel.setIcon(null);
+                    }
+                }
+            } catch (Exception e) {
+                imageLabel.setText("Error loading image: " + e.getMessage());
+                imageLabel.setIcon(null);
+                System.err.println("Error loading " + imagePath + ": " + e.getMessage());
+            }
         } else {
-            imageLabel.setText("Image not found: " + imagePath);
+            imageLabel.setText("No image found for " + petType);
             imageLabel.setIcon(null);
         }
         
