@@ -1,0 +1,34 @@
+# Compiled class files
+*.class
+
+# Mobile Tools for Java (J2ME)
+*.jad
+*.jar
+
+# Package Files
+*.war
+*.ear
+
+# IDE files
+/.idea/
+*.iml
+/.vscode/
+
+# Build folders
+/bin/
+/out/
+/target/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# macOS
+*.swp
+
+# Others
+*.class
